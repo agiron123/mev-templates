@@ -142,8 +142,15 @@ async function loadAllPoolsFromV2(
             const events = await v2Factory.queryFilter(filter, params[0], params[1]);
 
             for (let event of events) {
+
+                if (!event.args || event.args.length < 3) {
+                    logger.warn(`Event ${event.transactionHash} has less than 3 arguments`);
+                    continue;
+                }
+
                 let token0 = event.args[0];
                 let token1 = event.args[1];
+
 
                 let decimals0;
                 let decimals1;

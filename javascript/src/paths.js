@@ -114,6 +114,9 @@ function generateTriangularPaths(pools, tokenIn) {
     */
     const paths = [];
 
+    logger.info('Generating 3-hop arbitrage paths for pools: ');
+    logger.info(pools);
+
     pools = Object.values(pools);
 
     const progress = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);

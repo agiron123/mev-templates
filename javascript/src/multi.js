@@ -46,13 +46,22 @@ async function batchGetUniswapV2Reserves(httpsUrl, poolAddresses) {
     for (let i = 0; i < batch; i++) {
         let startIdx = i * poolsPerBatch;
         let endIdx = Math.min(startIdx + poolsPerBatch, poolsCnt);
+        console.log('Getting reserves for batch ' + i + ' from ' + startIdx + ' to ' + endIdx);
         promises.push(
             getUniswapV2Reserves(httpsUrl, poolAddresses.slice(startIdx, endIdx))
         );
     }
 
-    const results = await Promise.all(promises);
-    const reserves = Object.assign(...results);
+    const results = await Promise.allSettled(promises);
+
+    for (let i = 0; i < results.length; i++) {
+        console.log('results : ' + i + ':', results[i]);
+    }
+
+    let successfulResults = results.filter(result => result.status === 'fulfilled').map(result => result.value);
+
+    const reserves = Object.assign({}, ...successfulResults);
+    console.log(JSON.stringify(reserves, null, 2));
     return reserves;
 }
 
